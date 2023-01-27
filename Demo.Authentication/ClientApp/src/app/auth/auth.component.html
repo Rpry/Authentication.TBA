@@ -1,0 +1,36 @@
+<mat-label>Token-based authentication</mat-label>
+
+<div *ngIf="userInfo != undefined && !userInfo.isAuthenticated">
+  <mat-form-field>
+    <mat-label>Логин</mat-label>
+    <input matInput type="text" value="" [(ngModel)]="login" />
+  </mat-form-field>
+  <br />
+  <mat-form-field>
+    <mat-label>Пароль</mat-label>
+    <input matInput title="Пароль" type="text" value="" [(ngModel)]="password" />
+  </mat-form-field>
+</div>
+<br />
+<div>{{ userInfo.isAuthenticated ? 'Вход выполнен по схеме "' + userInfo.scheme + '"' : 'Вход не выполнен' }}</div>
+
+<div>
+  <button mat-raised-button
+          *ngIf="userInfo.isAuthenticated"
+          (click)="logout()">Выйти</button>
+</div>
+<br />
+<div>
+  <button mat-raised-button
+          *ngIf="!userInfo.isAuthenticated"
+          (click)="authenticate(login, password)">Войти</button>
+</div>
+<br />
+<div>
+  <button mat-raised-button (click)="checkAnonymousRoute()">Отправить запрос в метод, доступный анонимным пользователям</button>
+</div>
+<br />
+<div>
+  <button mat-raised-button (click)="checkJwtProtectedRoute()">Отправить запрос в метод, требующий авторизацию</button>
+</div>
+<br />
