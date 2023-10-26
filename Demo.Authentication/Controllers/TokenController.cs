@@ -29,38 +29,32 @@ namespace Demo.Authentication.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(AuthDto _userData)
         {
-
             // todo Проверяем пароль
+            
             var claims = new[] {
-                new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                /*
-                new Claim("UserId", user.UserId.ToString()),
-                new Claim("DisplayName", user.DisplayName),
-                new Claim("UserName", user.UserName),
-                new Claim("Email", user.Email)
-                */
+                
+                new Claim("UserId", Guid.NewGuid().ToString()),
+                new Claim("Email", "userEmail")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 claims,
                 expires: DateTime.UtcNow.AddMinutes(10),
-                signingCredentials: signIn);
+                signingCredentials: signingCredentials);
 
             return Ok(new TokenDto
             {
-                IdToken = new JwtSecurityTokenHandler().WriteToken(token)
+                IdToken = new JwtSecurityTokenHandler().WriteToken(token),
             });
         }
     }
     
     public class TokenDto
     {
-        public String IdToken { get; set; }    
+        public String IdToken { get; set; }
     }
 }
