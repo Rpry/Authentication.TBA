@@ -5,12 +5,9 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { AuthComponent } from './auth/auth.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatRadioModule } from '@angular/material/radio';
 import {AuthInterceptor} from "./AuthInterceptor";
+import {AuthComponent} from "./auth/auth.component";
+import {environment} from "../environments/environment";
 
 @NgModule({
   declarations: [
@@ -18,21 +15,21 @@ import {AuthInterceptor} from "./AuthInterceptor";
     AuthComponent
   ],
   imports: [
-    BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
+    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot([]),
-    BrowserAnimationsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatRadioModule
+    RouterModule.forRoot([
+    ])
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
+    {
+      provide: 'BASE_URL',
+      useValue: environment.apiUrl }
   ],
   bootstrap: [AppComponent]
 })

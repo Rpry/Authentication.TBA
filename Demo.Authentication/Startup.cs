@@ -1,8 +1,10 @@
 using System.Text;
 using Demo.Authentication.Authentication;
+using Demo.Authentication.Authorization;
 using Demo.Authentication.Data;
 using Demo.Authentication.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -46,10 +48,37 @@ namespace Demo.Authentication
                 .AddScheme<AuthSchemeOptions, AuthSchemeHandler>("MyCustomScheme", options =>
             {
             });
-            
-            services.AddAuthorization();
+
+            //services.AddAuthorization();
+            services.AddAuthorization(op =>
+            {
+               op.AddPolicy(Policies.RequireAge18Plus,
+                    new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                        .RequireAuthenticatedUser()
+                        .AddRequirements(new MinAgeRequirement(18))
+                        .Build());
+            });
+            /*
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policies.RequireAge18Plus,
+                    policy => policy.RequireAssertion(context =>
+                        context.User.HasClaim(c =>
+                            c.Type == "age"
+                            && int.Parse(c.Value) > 18)));
+            });
+            */
+            services.AddTransient<IAuthorizationHandler, AgeAuthorizationHandler>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<Database>();
+            
+            // Add Cors
+            services.AddCors(o => o.AddPolicy("Cors", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,9 +105,11 @@ namespace Demo.Authentication
             app.UseRouting();
 
             // Добавляем аутентификацию и авторизацию в обработку запросов
-            app.UseAuthentication();
-            app.UseAuthorization();  //Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler
+            app.UseAuthentication(); //Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler
+            app.UseAuthorization();
             app.UseCustomMiddleware();
+            app.UseCors("Cors");
+            
             app.UseEndpoints(
                 endpoints =>
                 {
@@ -87,6 +118,7 @@ namespace Demo.Authentication
                         pattern: "{controller}/{action=Index}/{id?}");
                 });
 
+            /*
             app.UseSpa(
                 spa =>
                 {
@@ -100,6 +132,7 @@ namespace Demo.Authentication
                         spa.UseAngularCliServer(npmScript: "start");
                     }
                 });
+                */
         }
     }
 }

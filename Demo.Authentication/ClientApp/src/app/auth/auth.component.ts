@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserInfo } from './user-info';
 import * as moment from "moment";
 import {TokenDto} from "./tokenDto";
+import {User} from "oidc-client";
 
 @Component({
   selector: 'app-auth',
@@ -11,7 +12,11 @@ import {TokenDto} from "./tokenDto";
 })
 export class AuthComponent implements OnInit {
 
-  constructor(private readonly httpClient: HttpClient) { }
+  constructor(private readonly httpClient: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+    this.login = "";
+    this.password = "";
+    this.baseUrl = baseUrl;
+  }
 
   public userInfo: UserInfo = {
     claims: [],
@@ -21,7 +26,7 @@ export class AuthComponent implements OnInit {
 
   public login: string;
   public password: string;
-
+  public baseUrl: string;
   ngOnInit() {
     this.loadUserInfo();
   }
@@ -29,19 +34,19 @@ export class AuthComponent implements OnInit {
   public loadUserInfo(): void {
     this
       .httpClient
-      .post('protected/getUserInfo', null)
-      .subscribe((userInfo: UserInfo) => this.userInfo = userInfo);
+      .post<UserInfo>(`${this.baseUrl}/protected/getUserInfo`, null)
+      .subscribe((data) =>  {
+        this.userInfo = data
+      });
   }
-
   public logout(): void {
     this.userInfo.isAuthenticated = false;
-    this.setSession(null);
+    this.setSession("");
   }
-
   public authenticate(login: string, password: string): void {
     this
       .httpClient
-      .post<TokenDto>(`token`, { login: login, password: password })
+      .post<TokenDto>(`${this.baseUrl}/token`, { login: login, password: password })
       .subscribe(result  => {
         if (result) {
           this.setSession(result.idToken);
@@ -52,31 +57,28 @@ export class AuthComponent implements OnInit {
         }
       });
   }
-
   public checkJwtProtectedRoute(): void {
     this
       .httpClient
-      .post('protected/methodRequiringAuthorization', null)
+      .post(`${this.baseUrl}/protected/methodRequiringAuthorization`, null)
       .subscribe(result => {
           alert(result);
         },
           error => alert(error.status));
   }
-
   public checkAnonymousRoute(): void {
     this
       .httpClient
-      .post('protected/method', null)
+      .post(`${this.baseUrl}/protected/method`, null)
       .subscribe(result => alert(result), error => alert(error.status));
   }
-
-  private setSession(authResult) {
+  private setSession(authResult: string) {
     localStorage.setItem('id_token', authResult);
     if(authResult == null){
       return;
     }
 
-    const expiresAt = moment().add(authResult.expiresIn,'second');
-    localStorage.setItem("expires_at", JSON.stringify(expiresAt.valueOf()) );
+    //const expiresAt = moment().add(authResult.expiresIn,'second');
+    //localStorage.setItem("expires_at", JSON.stringify(expiresAt.valueOf()) );
   }
 }

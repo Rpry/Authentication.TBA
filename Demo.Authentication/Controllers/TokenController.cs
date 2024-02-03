@@ -34,7 +34,9 @@ namespace Demo.Authentication.Controllers
             var claims = new[] {
                 
                 new Claim("UserId", Guid.NewGuid().ToString()),
-                new Claim("Email", "userEmail")
+                new Claim("Email", "userEmail"),
+                new Claim("age", "2"),
+                new Claim("age", "3")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

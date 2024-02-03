@@ -1,6 +1,9 @@
 ﻿using System.Linq;
+using Demo.Authentication.Authorization;
 using Demo.Authentication.Dto;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Authentication.Controllers
@@ -17,11 +20,13 @@ namespace Demo.Authentication.Controllers
         }
         
         [Authorize]
-        // [Authorize(AuthenticationSchemes = "MyCustomScheme")]
+        //[Authorize(AuthenticationSchemes = "MyCustomScheme")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(Policies.RequireAge18Plus)]
         [HttpPost("methodRequiringAuthorization")]
         public JsonResult MethodRequiringAuthorization()
         {
-            
+            //PassThroughAuthorizationHandler
             return new JsonResult("Успех!");
         }
 
