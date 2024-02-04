@@ -94,7 +94,8 @@ namespace Demo.Authentication
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            
+            app.UseCors("Cors");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             if (!env.IsDevelopment())
@@ -108,7 +109,6 @@ namespace Demo.Authentication
             app.UseAuthentication(); //Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerHandler
             app.UseAuthorization();
             app.UseCustomMiddleware();
-            app.UseCors("Cors");
             
             app.UseEndpoints(
                 endpoints =>
