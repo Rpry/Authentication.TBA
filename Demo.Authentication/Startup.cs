@@ -5,6 +5,7 @@ using Demo.Authentication.Data;
 using Demo.Authentication.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -48,8 +49,15 @@ namespace Demo.Authentication
                 .AddScheme<AuthSchemeOptions, AuthSchemeHandler>("MyCustomScheme", options =>
             {
             });
-
             //services.AddAuthorization();
+            services.AddAuthorization(op =>
+            {
+                op.AddPolicy("AspManager", policy =>
+                {
+                    policy.RequireRole("Admin");
+                    policy.RequireClaim("Coding-Skill", "ASP.NET Core MVC");
+                });
+            });
             services.AddAuthorization(op =>
             {
                op.AddPolicy(Policies.RequireAge18Plus,
@@ -68,10 +76,10 @@ namespace Demo.Authentication
                             && int.Parse(c.Value) > 18)));
             });
             */
+
             services.AddTransient<IAuthorizationHandler, AgeAuthorizationHandler>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<Database>();
-            
             // Add Cors
             services.AddCors(o => o.AddPolicy("Cors", builder =>
             {
@@ -117,22 +125,6 @@ namespace Demo.Authentication
                         name: "default",
                         pattern: "{controller}/{action=Index}/{id?}");
                 });
-
-            /*
-            app.UseSpa(
-                spa =>
-                {
-                    // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                    // see https://go.microsoft.com/fwlink/?linkid=864501
-
-                    spa.Options.SourcePath = "ClientApp";
-
-                    if (env.IsDevelopment())
-                    {
-                        spa.UseAngularCliServer(npmScript: "start");
-                    }
-                });
-                */
         }
     }
 }

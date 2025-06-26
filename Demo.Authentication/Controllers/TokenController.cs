@@ -32,11 +32,11 @@ namespace Demo.Authentication.Controllers
             // todo Проверяем пароль
             
             var claims = new[] {
-                
+                new Claim(ClaimTypes.Role, _userData.Login),
+                new Claim("Coding-Skill", "ASP.NET Core MVC"),
                 new Claim("UserId", Guid.NewGuid().ToString()),
                 new Claim("Email", "userEmail"),
-                new Claim("age", "2"),
-                new Claim("age", "3")
+                new Claim("age", "17"),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

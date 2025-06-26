@@ -20,7 +20,9 @@ namespace Demo.Authentication.Controllers
         }
         
         [Authorize]
+        //[Authorize(Roles = "Admin")]
         //[Authorize(AuthenticationSchemes = "MyCustomScheme")]
+        //[Authorize("AspManager")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         //[Authorize(Policies.RequireAge18Plus)]
         [HttpPost("methodRequiringAuthorization")]
