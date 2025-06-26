@@ -132,5 +132,8 @@
       }
     }
   },
-  "defaultProject": "Demo.Authentication"
+  "defaultProject": "Demo.Authentication",
+  "cli": {
+    "analytics": "4d70968f-bf48-4ebc-bef6-e9d039d66d37"
+  }
 }
