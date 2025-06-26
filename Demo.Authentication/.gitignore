@@ -229,3 +229,15 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+../.idea/
+
+# Артефакты Angular
+ClientApp/dist/
+ClientApp/out-tsc/
+ClientApp/.angular/
+ClientApp/coverage/
+ClientApp/node_modules/
+ClientApp/src/**/*.js
+ClientApp/src/**/*.js.map
+ClientApp/src/**/*.d.ts
