@@ -4,5 +4,5 @@
 
 
 Запуск:
-1. Перейти в папку CLientApp и выполнить ng serve --port 4200 (запустится angular-часть)
+1. Перейти в папку ClientApp и выполнить ng serve --port 4200 (запустится angular-часть)
 2. Запустить asp.netcore-часть
