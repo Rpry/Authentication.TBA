@@ -49,7 +49,7 @@ export class AuthComponent implements OnInit {
       .post<TokenDto>(`${this.baseUrl}/token`, { login: login, password: password })
       .subscribe(result  => {
         if (result) {
-          this.setSession(result.idToken);
+          this.setSession(result.token);
           alert('Успех');
           this.loadUserInfo();
         } else {
@@ -73,7 +73,7 @@ export class AuthComponent implements OnInit {
       .subscribe(result => alert(result), error => alert(error.status));
   }
   private setSession(authResult: string) {
-    localStorage.setItem('id_token', authResult);
+    localStorage.setItem('token', authResult);
     if(authResult == null){
       return;
     }

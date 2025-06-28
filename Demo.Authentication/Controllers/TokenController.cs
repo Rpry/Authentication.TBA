@@ -30,7 +30,6 @@ namespace Demo.Authentication.Controllers
         public async Task<IActionResult> Post(AuthDto _userData)
         {
             // todo Проверяем пароль
-            
             var claims = new[] {
                 new Claim(ClaimTypes.Role, _userData.Login),
                 new Claim("Coding-Skill", "ASP.NET Core MVC"),
@@ -50,13 +49,13 @@ namespace Demo.Authentication.Controllers
 
             return Ok(new TokenDto
             {
-                IdToken = new JwtSecurityTokenHandler().WriteToken(token),
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
             });
         }
     }
     
     public class TokenDto
     {
-        public String IdToken { get; set; }
+        public String Token { get; set; }
     }
 }
